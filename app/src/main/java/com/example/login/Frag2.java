@@ -283,6 +283,7 @@ public class Frag2 extends Fragment {
                 .post(requestBody)
                 .build();
 
+        // ... (기존 코드)
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(@NotNull Call call, @NotNull IOException e) {
@@ -301,12 +302,12 @@ public class Frag2 extends Fragment {
                     getActivity().runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
+                            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);  // Add this line
                             imageView.setImageBitmap(bmp);
                         }
                     });
                 }
             }
-
         });
     }
 
