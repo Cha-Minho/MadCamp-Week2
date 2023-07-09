@@ -3,15 +3,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Frag3"
     android:orientation="vertical">
 
-    <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
-        android:id="@+id/youtube_player_view"
-        android:layout_width="match_parent"
+    <android.widget.Button
+        android:id="@+id/btn_stretch_1"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:videoId="S0Q4gqBUs7c"
-        app:autoPlay="true" />
+        android:text="스트레칭1"/>
 
 </LinearLayout>

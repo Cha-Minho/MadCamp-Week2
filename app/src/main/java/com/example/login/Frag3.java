@@ -1,35 +1,38 @@
 package com.example.login;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+import android.widget.Button;
 
 public class Frag3 extends Fragment {
 
-    public View onCreateView(@NonNull LayoutInflater inflater,
-                             ViewGroup container, Bundle savedInstanceState) {
+    @Override
+    public View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_frag3, container, false);
-        // do some initialization here, if needed
-        YouTubePlayerView youTubePlayerView = root.findViewById(R.id.youtube_player_view);
-        getLifecycle().addObserver(youTubePlayerView);
 
-        youTubePlayerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
+        Button btnStretch1 = root.findViewById(R.id.btn_stretch_1);
+        btnStretch1.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                super.onReady(youTubePlayer);
-                String videoId = "S0Q4gqBUs7c";
-                youTubePlayer.loadVideo(videoId, 0);
+            public void onClick(View v) {
+                // Replace Frag3 with Frag3_1
+                Fragment frag3_1 = new Frag3_1();
+                requireActivity().getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.nav_host_fragment, frag3_1)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
+
         return root;
     }
+//    @Override
+//    public void onResume() {
+//        super.onResume();
+//        // Clear the back stack when Frag3 is resumed
+//        requireActivity().getSupportFragmentManager().popBackStack();
+//    }
 }
