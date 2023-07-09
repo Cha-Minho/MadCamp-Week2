@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    tools:context=".Frag3_1"
+    tools:context=".Stretch1Activity"
     android:orientation="vertical">
 
     <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
@@ -19,5 +19,11 @@
     <!--        android:name="com.example.login.Frag3"-->
     <!--        android:layout_width="match_parent"-->
     <!--        android:layout_height="wrap_content" />-->
+
+    <android.widget.Button
+        android:id="@+id/btn_BackToFrag3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="뒤로가기"/>
 
 </LinearLayout>
