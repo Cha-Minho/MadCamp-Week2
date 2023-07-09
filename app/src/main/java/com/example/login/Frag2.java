@@ -1,89 +1,136 @@
 package com.example.login;
 
-import android.app.Activity;
-import android.content.Intent;
+import android.Manifest;
+import android.content.Context;
 import android.content.pm.PackageManager;
+import android.graphics.ImageFormat;
+import android.graphics.Matrix;
+import android.graphics.RectF;
+import android.graphics.SurfaceTexture;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
-import android.graphics.drawable.BitmapDrawable;
-import android.hardware.Camera;
+import android.hardware.camera2.*;
+import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.Image;
+import android.media.ImageReader;
 import android.os.Bundle;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.fragment.app.Fragment;
-
-import android.provider.MediaStore;
+import android.os.Handler;
+import android.os.HandlerThread;
 import android.util.Log;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
+import android.view.*;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+
 import org.jetbrains.annotations.NotNull;
 
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MediaType;
-//import okhttp3.Response;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.RequestBody;
-import okhttp3.ResponseBody;
-import okhttp3.logging.HttpLoggingInterceptor;
-//import retrofit2.Callback;
-//import retrofit2.Call;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-import retrofit2.http.Multipart;
-import retrofit2.http.POST;
-import retrofit2.http.Part;
-import okhttp3.Call;
-import okhttp3.Callback;
-import okhttp3.MultipartBody;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.RequestBody;
-import okhttp3.Response;
-import okhttp3.MediaType;
-import java.io.File;
-import java.io.IOException;
+import okhttp3.*;
 
 public class Frag2 extends Fragment {
+    private static final int REQUEST_CAMERA_PERMISSION = 200;
     private boolean isProcessingImage = false;
-    ImageView imageView;
-    CameraSurfaceView surfaceView;
-    Timer timer;
+    private ImageView imageView;
+    private TextureView textureView;
+    private CameraDevice cameraDevice;
+    private CameraCaptureSession cameraCaptureSession;
+    private CaptureRequest.Builder captureRequestBuilder;
+    private Timer timer;
     private final OkHttpClient client = new OkHttpClient();
 
+    private ImageReader reader;
+
+    private final TextureView.SurfaceTextureListener textureListener = new TextureView.SurfaceTextureListener() {
+        @Override
+        public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
+            //when textureView is available, open the camera
+            openCamera();
+        }
+
+        @Override
+        public void onSurfaceTextureSizeChanged(@NonNull SurfaceTexture surface, int width, int height) {
+            // Transform you image captured size according to the surface width and height
+        }
+
+        @Override
+        public boolean onSurfaceTextureDestroyed(@NonNull SurfaceTexture surface) {
+            return false;
+        }
+
+        @Override
+        public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
+        }
+    };
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_frag2, container, false);
-        imageView = root.findViewById(R.id.imageView);
-        surfaceView = root.findViewById(R.id.surfaceView);
+        textureView = root.findViewById(R.id.textureView);
 
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                capture();
-            }
-        };
-
-        timer = new Timer();
-        timer.schedule(task, 0, 500);  // 0.5초마다 capture() 호출
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
+        } else {
+            textureView.setSurfaceTextureListener(textureListener);
+        }
 
         return root;
     }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        if (requestCode == REQUEST_CAMERA_PERMISSION) {
+            if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                Toast.makeText(getContext(), "You can't use this app without granting camera permission", Toast.LENGTH_SHORT).show();
+                getActivity().finish();
+            }
+        }
+    }
+
+    private void openCamera() {
+        CameraManager manager = (CameraManager) getActivity().getSystemService(Context.CAMERA_SERVICE);
+        try {
+            if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+                return;
+            }
+            String cameraId = manager.getCameraIdList()[0];
+            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+            StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+            manager.openCamera(cameraId, stateCallback, null);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
+        @Override
+        public void onOpened(@NonNull CameraDevice camera) {
+            cameraDevice = camera;
+            startPreview();
+        }
+
+        @Override
+        public void onDisconnected(@NonNull CameraDevice camera) {
+            cameraDevice.close();
+        }
+
+        @Override
+        public void onError(@NonNull CameraDevice camera, int error) {
+            cameraDevice.close();
+            cameraDevice = null;
+        }
+    };
+
     @Override
     public void onDestroy() {
         super.onDestroy();
@@ -91,129 +138,152 @@ public class Frag2 extends Fragment {
             timer.cancel();
             timer = null;
         }
-    }
-    @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode){
-            case 101:
-                if(grantResults.length > 0){
-                    if(grantResults[0] == PackageManager.PERMISSION_GRANTED){
-                        Toast.makeText(getContext(), "카메라 권한 사용자가 승인함",Toast.LENGTH_LONG).show();
-                    }
-                    else if(grantResults[0] == PackageManager.PERMISSION_DENIED){
-                        Toast.makeText(getContext(), "카메라 권한 사용자가 허용하지 않음.",Toast.LENGTH_LONG).show();
-                    }
-                    else{
-                        Toast.makeText(getContext(), "수신권한 부여받지 못함.",Toast.LENGTH_LONG).show();
-                    }
-                }
+        if (null != cameraDevice) {
+            cameraDevice.close();
+            cameraDevice = null;
+        }
+        if (null != cameraCaptureSession) {
+            cameraCaptureSession.close();
+            cameraCaptureSession = null;
         }
     }
 
-    public void capture() {
-        if (isProcessingImage) {
-            Log.d("not taken", "123123132121313123322133");
-            return;
-        }
-        else {
-            Log.d("taken", "1231231231231");
-        }
-        isProcessingImage = true;
-        surfaceView.capture(new Camera.PictureCallback() {
-            @Override
-            public void onPictureTaken(byte[] data, Camera camera) {
-                BitmapFactory.Options options = new BitmapFactory.Options();
-                options.inSampleSize = 8; // 1/8사이즈로 보여주기
-                Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length); //data 어레이 안에 있는 데이터 불러와서 비트맵에 저장
-
-                // 이미지 전처리
-                int width = bitmap.getWidth();
-                int height = bitmap.getHeight();
-                int newWidth = 200;
-                int newHeight = 200;
-
-                float scaleWidth = ((float) newWidth) / width;
-                float scaleHeight = ((float) newHeight) / height;
-
-                Matrix matrix = new Matrix();
-                matrix.setScale(-1, 1);
-                matrix.postRotate(90);
-
-                matrix.postScale(scaleWidth, scaleHeight);
-
-                Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0,0,width,height,matrix,true);
-                BitmapDrawable bmd = new BitmapDrawable(resizedBitmap);
-
-                imageView.setImageDrawable(new BitmapDrawable(resizedBitmap));//이미지뷰에 사진 보여주기
-                camera.startPreview();
-
-                // HTTP 요청을 이용하여 이미지를 서버에 전송
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
-                byte[] bitmapData = bos.toByteArray();
-
-                RequestBody requestBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("image", "people.jpg",
-                                RequestBody.create(bitmapData, MediaType.parse("image/jpeg")))
-                        .build();
-
-                Request request = new Request.Builder()
-                        .url("https://6ef2-192-249-19-234.ngrok-free.app/api/")
-                        .post(requestBody)
-                        .build();
-
-                client.newCall(request).enqueue(new Callback() {
-                    @Override
-                    public void onFailure(@NotNull Call call, @NotNull IOException e) {
-                        isProcessingImage = false;
-                        Log.d("OkHttpError", e.getMessage()); // 에러 메시지 출력
-                        capture();
+    private void startPreview() {
+        reader = ImageReader.newInstance(640, 480, ImageFormat.JPEG, 1);
+        try {
+            SurfaceTexture texture = textureView.getSurfaceTexture();
+            texture.setDefaultBufferSize(640, 480);
+            Surface surface = new Surface(texture);
+            Surface readerSurface = reader.getSurface();
+            captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
+            captureRequestBuilder.addTarget(surface);
+            cameraDevice.createCaptureSession(Arrays.asList(surface, readerSurface), new CameraCaptureSession.StateCallback() {
+                @Override
+                public void onConfigured(@NonNull CameraCaptureSession session) {
+                    if (cameraDevice == null) {
+                        return;
                     }
 
-                    @Override
-                    public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
-                        isProcessingImage = false;
-                        if (!response.isSuccessful()) {
-                            throw new IOException("Unexpected code " + response);
-                        } else {
+                    cameraCaptureSession = session;
+                    TimerTask task = new TimerTask() {
+                        @Override
+                        public void run() {
                             capture();
                         }
+                    };
+                    timer = new Timer();
+                    timer.schedule(task, 0, 500);  // Every 0.5 seconds, call capture()
+                }
+
+                @Override
+                public void onConfigureFailed(@NonNull CameraCaptureSession session) {
+                }
+            }, null);
+
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void capture() {
+        if (isProcessingImage) {
+            return;
+        }
+
+        isProcessingImage = true;
+        try {
+            final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
+            captureBuilder.addTarget(reader.getSurface());
+
+            HandlerThread handlerThread = new HandlerThread("CameraBackground");
+            handlerThread.start();
+            Handler backgroundHandler = new Handler(handlerThread.getLooper());
+
+            reader.setOnImageAvailableListener(new ImageReader.OnImageAvailableListener() {
+                @Override
+                public void onImageAvailable(ImageReader reader) {
+                    Image img = null;
+                    try {
+                        img = reader.acquireLatestImage();
+                        ByteBuffer buffer = img.getPlanes()[0].getBuffer();
+                        byte[] bytes = new byte[buffer.capacity()];
+                        buffer.get(bytes);
+                        sendImageToServer(bytes);
+                    } finally {
+                        if (img != null) {
+                            img.close();
+                        }
                     }
-                });
+                }
+            }, backgroundHandler);
+
+            cameraCaptureSession.capture(captureBuilder.build(), new CameraCaptureSession.CaptureCallback() {
+                @Override
+                public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+                    super.onCaptureCompleted(session, request, result);
+                    startPreview(); // Start preview again after capturing the image
+                }
+            }, backgroundHandler);
+
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+    private void sendImageToServer(byte[] data) {
+        BitmapFactory.Options options = new BitmapFactory.Options();
+        options.inSampleSize = 8;
+        Bitmap bitmap = BitmapFactory.decodeByteArray(data, 0, data.length);
+
+        // 이미지 전처리
+        int width = bitmap.getWidth();
+        int height = bitmap.getHeight();
+        int newWidth = 200;
+        int newHeight = 200;
+
+        float scaleWidth = ((float) newWidth) / width;
+        float scaleHeight = ((float) newHeight) / height;
+
+        Matrix matrix = new Matrix();
+        matrix.postScale(scaleWidth, scaleHeight);
+        Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0,0,width,height,matrix,true);
+
+        // Http 요청을 이용하여 이미지를 서버에 전송
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+        resizedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, bos);
+        byte[] bitmapData = bos.toByteArray();
+
+        MediaType MEDIA_TYPE_JPEG = MediaType.parse("image/jpeg");
+        RequestBody requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("image", "people.jpg",
+                        RequestBody.Companion.create(data, MEDIA_TYPE_JPEG))
+                .build();
+
+        Request request = new Request.Builder()
+                .url("https://6ef2-192-249-19-234.ngrok-free.app/api/")
+                .post(requestBody)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                isProcessingImage = false;
+                Log.d("OkHttpError", e.getMessage()); // 에러 메시지 출력
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                isProcessingImage = false;
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                }
             }
         });
     }
-
-
-    public class RetrofitClient {
-        private static Retrofit retrofit = null;
-
-        private RetrofitClient() {}
-
-        public static Retrofit getClient(String baseUrl) {
-            if (retrofit == null) {
-                OkHttpClient client = new OkHttpClient.Builder()
-                        .addInterceptor(new HttpLoggingInterceptor().setLevel(HttpLoggingInterceptor.Level.BODY))
-                        .build();
-
-                retrofit = new Retrofit.Builder()
-                        .baseUrl(baseUrl)
-                        .addConverterFactory(GsonConverterFactory.create())
-                        .client(client)
-                        .build();
-            }
-
-            return retrofit;
-        }
-    }
-
-    public interface ApiService {
-        @Multipart
-        @POST("api/")
-        retrofit2.Call<ResponseBody> uploadImage(@Part MultipartBody.Part image);
-    }
-
 
 }
