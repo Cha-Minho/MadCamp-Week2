@@ -202,7 +202,7 @@ public class Frag2 extends Fragment {
 
 
     private void capture() {
-        if (isProcessingImage) {
+        if (isProcessingImage || cameraDevice == null) {
             return;
         }
 
@@ -242,9 +242,10 @@ public class Frag2 extends Fragment {
             }, backgroundHandler);
 
         } catch (CameraAccessException e) {
-            e.printStackTrace();
+            return;
         }
     }
+
 
 
 
@@ -299,16 +300,19 @@ public class Frag2 extends Fragment {
                 } else {
                     InputStream in = response.body().byteStream();
                     final Bitmap bmp = BitmapFactory.decodeStream(in);
-                    getActivity().runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);  // Add this line
-                            imageView.setImageBitmap(bmp);
-                        }
-                    });
+                    if (getActivity() != null) {
+                        getActivity().runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);  // Add this line
+                                imageView.setImageBitmap(bmp);
+                            }
+                        });
+                    }
                 }
             }
         });
+
     }
 
 }
