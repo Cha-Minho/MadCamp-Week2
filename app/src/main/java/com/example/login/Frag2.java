@@ -31,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Timer;
@@ -77,6 +78,7 @@ public class Frag2 extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.fragment_frag2, container, false);
         textureView = root.findViewById(R.id.textureView);
+        imageView = root.findViewById(R.id.imageView); // Add this line
 
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
             ActivityCompat.requestPermissions(getActivity(), new String[]{Manifest.permission.CAMERA}, REQUEST_CAMERA_PERMISSION);
@@ -86,6 +88,7 @@ public class Frag2 extends Fragment {
 
         return root;
     }
+
 
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
@@ -103,14 +106,25 @@ public class Frag2 extends Fragment {
             if (ActivityCompat.checkSelfPermission(getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
                 return;
             }
-            String cameraId = manager.getCameraIdList()[0];
-            CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-            StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
-            manager.openCamera(cameraId, stateCallback, null);
+            String cameraId = null;
+            for (String id : manager.getCameraIdList()) {
+                CameraCharacteristics characteristics = manager.getCameraCharacteristics(id);
+                Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                    cameraId = id;
+                    break;
+                }
+            }
+            if (cameraId != null) {
+                CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
+                StreamConfigurationMap map = characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                manager.openCamera(cameraId, stateCallback, null);
+            }
         } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
+
 
     private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
         @Override
@@ -172,7 +186,7 @@ public class Frag2 extends Fragment {
                         }
                     };
                     timer = new Timer();
-                    timer.schedule(task, 0, 500);  // Every 0.5 seconds, call capture()
+                    timer.schedule(task, 0, 100);  // Every 0.1 seconds, call capture()
                 }
 
                 @Override
@@ -281,8 +295,18 @@ public class Frag2 extends Fragment {
                 isProcessingImage = false;
                 if (!response.isSuccessful()) {
                     throw new IOException("Unexpected code " + response);
+                } else {
+                    InputStream in = response.body().byteStream();
+                    final Bitmap bmp = BitmapFactory.decodeStream(in);
+                    getActivity().runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            imageView.setImageBitmap(bmp);
+                        }
+                    });
                 }
             }
+
         });
     }
 
