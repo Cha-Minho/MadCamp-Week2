@@ -1,17 +1,23 @@
 package com.example.login;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.w3c.dom.Comment;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -32,6 +38,13 @@ public class PostDetailActivity extends AppCompatActivity {
     private String postContent;
     private int postId;
     private static final int EDIT_POST_REQUEST_CODE = 2;
+
+    private RecyclerView commentRecyclerView;
+    private CommentAdapter commentAdapter;
+    private List<PostComment> commentList; // Comment model 클래스를 참조합니다.
+
+    private EditText commentInput;
+    private Button postCommentButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +67,27 @@ public class PostDetailActivity extends AppCompatActivity {
         // Set the initial title and content
         titleTextView.setText(postTitle);
         contentTextView.setText(postContent);
+
+        // Initialize the RecyclerView and CommentAdapter
+        commentRecyclerView = findViewById(R.id.recycler_view_comments);
+        commentList = new ArrayList<>(); // You should fetch actual comments from server
+        commentAdapter = new CommentAdapter(commentList);
+        commentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+        commentRecyclerView.setAdapter(commentAdapter);
+
+        // Load the comments for this post
+        loadComments();
+
+        // Initialize the comment input and post comment button
+        commentInput = findViewById(R.id.edit_text_comment);
+        postCommentButton = findViewById(R.id.button_submit_comment);
+
+        postCommentButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                postComment();
+            }
+        });
 
         // Set the click listener for the revise button
         reviseButton.setOnClickListener(new View.OnClickListener() {
@@ -83,6 +117,29 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
     }
+
+    private void postComment() {
+        String commentText = commentInput.getText().toString();
+        if (!commentText.isEmpty()) {
+            // Create a Comment object with the input text and other necessary information,
+            // then send it to the server. You should also add it to the commentList and notify
+            // the commentAdapter that the data has changed.
+            PostComment newComment = new PostComment(commentText);
+            commentList.add(newComment);
+            commentAdapter.notifyDataSetChanged();
+            commentInput.setText(""); // Clear the input box
+            // TODO: Send the newComment to your server
+
+            context, post_id, user_id
+        }
+    }
+
+    private void loadComments() {
+        // Fetch the comments for this post from the server and add them to the commentList,
+        // then notify the commentAdapter that the data has changed.
+
+         commentAdapter.notifyDataSetChanged();
+    }
     private void removeRequest() {
         OkHttpClient client = new OkHttpClient();
 
@@ -100,7 +157,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Build the request
         Request request = new Request.Builder()
-                .url("https://6ef2-192-249-19-234.ngrok-free.app/delete_post/") // replace with your actual URL and append the ID of the post
+                .url("https://92f1-192-249-19-234.ngrok-free.app/delete_post/") // replace with your actual URL and append the ID of the post
                 .post(body)
                 .build();
 
