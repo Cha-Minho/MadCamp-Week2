@@ -29,7 +29,7 @@ public class EmailActivity extends AppCompatActivity {
     private EditText emailEditText;
     private EditText passwordEditText;
     Button loginButton;
-    private static final String URL = "https://6ef2-192-249-19-234.ngrok-free.app/login/";
+    private static final String URL = "https://92f1-192-249-19-234.ngrok-free.app/login/";
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     @Override

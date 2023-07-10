@@ -280,7 +280,7 @@ public class Frag2 extends Fragment {
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://6ef2-192-249-19-234.ngrok-free.app/api/")
+                .url("https://92f1-192-249-19-234.ngrok-free.app/api/")
                 .post(requestBody)
                 .build();
 
