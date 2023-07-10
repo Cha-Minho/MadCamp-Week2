@@ -19,7 +19,11 @@
         android:layout_height="wrap_content"
         android:textSize="16sp"
         android:layout_marginTop="8dp"/>
-
+    <TextView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:id="@+id/post_id"
+        android:text=""/>
     <!-- Add more views as needed -->
 
 </LinearLayout>

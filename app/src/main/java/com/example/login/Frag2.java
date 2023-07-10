@@ -246,9 +246,6 @@ public class Frag2 extends Fragment {
         }
     }
 
-
-
-
     private void sendImageToServer(byte[] data) {
         BitmapFactory.Options options = new BitmapFactory.Options();
         options.inSampleSize = 8;

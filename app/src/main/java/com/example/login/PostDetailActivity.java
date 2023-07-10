@@ -1,16 +1,22 @@
 package com.example.login;
 
+import static java.security.AccessController.getContext;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.Comment;
@@ -46,10 +52,16 @@ public class PostDetailActivity extends AppCompatActivity {
     private EditText commentInput;
     private Button postCommentButton;
 
+    SharedPreferences sharedPref;
+
+    public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
+    private EditText editTextComment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_detail);
+        sharedPref = getSharedPreferences("UserPreferences", MODE_PRIVATE);
 
         // Retrieve the data from the intent
         Intent intent = getIntent();
@@ -68,15 +80,20 @@ public class PostDetailActivity extends AppCompatActivity {
         titleTextView.setText(postTitle);
         contentTextView.setText(postContent);
 
+
+
         // Initialize the RecyclerView and CommentAdapter
         commentRecyclerView = findViewById(R.id.recycler_view_comments);
         commentList = new ArrayList<>(); // You should fetch actual comments from server
+
+        // Load the comments for this post
+        loadComments();
+
         commentAdapter = new CommentAdapter(commentList);
         commentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         commentRecyclerView.setAdapter(commentAdapter);
 
-        // Load the comments for this post
-        loadComments();
+
 
         // Initialize the comment input and post comment button
         commentInput = findViewById(R.id.edit_text_comment);
@@ -86,6 +103,7 @@ public class PostDetailActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 postComment();
+//                Toast.makeText(PostDetailActivity됨.this, "postComment 안됨", Toast.LENGTH_SHORT).show();
             }
         });
 
@@ -120,26 +138,124 @@ public class PostDetailActivity extends AppCompatActivity {
 
     private void postComment() {
         String commentText = commentInput.getText().toString();
+        TextView tv_comment_id = findViewById(R.id.comment_id);
+
         if (!commentText.isEmpty()) {
             // Create a Comment object with the input text and other necessary information,
             // then send it to the server. You should also add it to the commentList and notify
             // the commentAdapter that the data has changed.
-            PostComment newComment = new PostComment(commentText);
+            PostComment newComment = new PostComment(commentText, postId, R.id.comment_id);
             commentList.add(newComment);
             commentAdapter.notifyDataSetChanged();
-            commentInput.setText(""); // Clear the input box
-            // TODO: Send the newComment to your server
 
-            context, post_id, user_id
+            // TODO: Send the newComment to your server
+            // context, post_id, user_id
+
+//            editTextComment = findViewById(R.id.edit_text_comment);
+
+            int userId = sharedPref.getInt("userId", -1);
+            int post_Id = postId;
+            Log.d("userID", String.valueOf(userId));
+            if (userId != -1) {
+                JSONObject json = new JSONObject();
+                try {
+                    json.put("context", commentInput.getText().toString());
+                    json.put("post_id", post_Id);
+                    json.put("user_id", userId);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+                OkHttpClient client = new OkHttpClient();
+                RequestBody body = RequestBody.create(JSON, json.toString());
+                Request request = new Request.Builder()
+                        .url("https://92f1-192-249-19-234.ngrok-free.app/comment/")
+                        .post(body)
+                        .build();
+                commentInput.setText(""); // Clear the input box
+
+                client.newCall(request).enqueue(new Callback() {
+                    @Override
+                    public void onFailure(Call call, IOException e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onResponse(Call call, Response response) throws IOException {
+                        if (response.isSuccessful()) {
+                            Log.d("TAG", "response: " + response.body().string());
+                            String responseBody = response.body().string();
+                            runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    tv_comment_id.setText(responseBody);
+                                }
+                            });
+//                            finish();
+                        } else {
+                            throw new IOException("Unexpected code " + response);
+                        }
+                    }
+                });
+            } else {
+                Toast.makeText(PostDetailActivity.this, "Post 안됨", Toast.LENGTH_SHORT).show();
+            }
+
+
+
+        } else {
+            Toast.makeText(PostDetailActivity.this, "Please fill out all fields", Toast.LENGTH_SHORT).show();
         }
     }
 
     private void loadComments() {
-        // Fetch the comments for this post from the server and add them to the commentList,
-        // then notify the commentAdapter that the data has changed.
+        OkHttpClient client = new OkHttpClient();
 
-         commentAdapter.notifyDataSetChanged();
+        // Build the request
+        Request request = new Request.Builder()
+                .url("https://92f1-192-249-19-234.ngrok-free.app/load_comments/" + postId + "/") // Assuming this is your URL
+                .get()
+                .build();
+
+        // Execute the request and retrieve the response
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                if (!response.isSuccessful()) {
+                    throw new IOException("Unexpected code " + response);
+                } else {
+                    // Parse the response. Assuming it's a JSON array of comments
+                    try {
+                        JSONArray jsonArray = new JSONArray(response.body().string());
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String commentText = jsonObject.getString("context"); // replace with your actual key
+                            postId = jsonObject.getInt("post_id");
+                            // Add other necessary data
+                            PostComment comment = new PostComment(commentText, postId, R.id.comment_id);
+                            commentList.add(comment);
+                        }
+
+                        // Important: You need to notify the adapter of the changes on the UI thread
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                commentAdapter.notifyDataSetChanged();
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        });
     }
+
+
     private void removeRequest() {
         OkHttpClient client = new OkHttpClient();
 
