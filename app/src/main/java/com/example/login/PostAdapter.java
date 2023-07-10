@@ -11,6 +11,15 @@ import java.util.List;
 
 public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder> {
     private List<Frag1.Post> posts;
+    private OnItemClickListener clickListener;
+
+    public interface OnItemClickListener {
+        void onItemClick(Frag1.Post post);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.clickListener = listener;
+    }
 
     public PostAdapter() {
         this.posts = new ArrayList<>();
@@ -31,8 +40,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
     @Override
     public void onBindViewHolder(@NonNull PostViewHolder holder, int position) {
         Frag1.Post post = posts.get(position);
-        holder.titleTextView.setText(post.getPostTitle());
-        holder.contentTextView.setText(post.getPostContent());
+        holder.bind(post);
     }
 
     @Override
@@ -40,7 +48,7 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
         return posts.size();
     }
 
-    static class PostViewHolder extends RecyclerView.ViewHolder {
+    class PostViewHolder extends RecyclerView.ViewHolder {
         TextView titleTextView;
         TextView contentTextView;
 
@@ -48,6 +56,24 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
             super(view);
             titleTextView = view.findViewById(R.id.post_title);
             contentTextView = view.findViewById(R.id.post_content);
+
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        Frag1.Post clickedPost = posts.get(position);
+                        if (clickListener != null) {
+                            clickListener.onItemClick(clickedPost);
+                        }
+                    }
+                }
+            });
+        }
+
+        void bind(Frag1.Post post) {
+            titleTextView.setText(post.getPostTitle());
+            contentTextView.setText(post.getPostContent());
         }
     }
 }
