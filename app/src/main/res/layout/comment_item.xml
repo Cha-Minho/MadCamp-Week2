@@ -12,5 +12,17 @@
         android:layout_weight="1"
         android:textSize="16sp"/>
 
+    <android.widget.Button
+        android:id="@+id/comment_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="삭제"/>
+
+    <TextView
+        android:id="@+id/comment_id"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:text=""/>
+
     <!-- If you want to add additional fields to display, add more TextViews or other Views here -->
 </LinearLayout>

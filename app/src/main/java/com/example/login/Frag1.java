@@ -173,6 +173,7 @@ public class Frag1 extends Fragment {
                             @Override
                             public void run() {
                                 postAdapter.setPosts(posts); // update the adapter with the new posts
+
                             }
                         });
                     } catch (JSONException e) {
