@@ -19,7 +19,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class RegisterActivity extends AppCompatActivity {
-    private static final String URL = "https://6ef2-192-249-19-234.ngrok-free.app/register/";
+    private static final String URL = "https://92f1-192-249-19-234.ngrok-free.app/register/";
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     @Override
