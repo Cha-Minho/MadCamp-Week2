@@ -56,6 +56,7 @@ public class Frag2 extends Fragment {
         @Override
         public void onSurfaceTextureAvailable(@NonNull SurfaceTexture surface, int width, int height) {
             //when textureView is available, open the camera
+            transformImage(width, height);
             openCamera();
         }
 
@@ -163,10 +164,12 @@ public class Frag2 extends Fragment {
     }
 
     private void startPreview() {
+        int width = 480;
+        int height = 640;
         reader = ImageReader.newInstance(640, 480, ImageFormat.JPEG, 1);
         try {
             SurfaceTexture texture = textureView.getSurfaceTexture();
-            texture.setDefaultBufferSize(640, 480);
+            texture.setDefaultBufferSize(width, height);
             Surface surface = new Surface(texture);
             Surface readerSurface = reader.getSurface();
             captureRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
@@ -179,6 +182,14 @@ public class Frag2 extends Fragment {
                     }
 
                     cameraCaptureSession = session;
+                    captureRequestBuilder.set(CaptureRequest.CONTROL_MODE, CameraMetadata.CONTROL_MODE_AUTO);
+                    try {
+                        cameraCaptureSession.setRepeatingRequest(captureRequestBuilder.build(), null, null);
+                        setAutoOrientation();
+                    } catch (CameraAccessException e) {
+                        e.printStackTrace();
+                    }
+
                     TimerTask task = new TimerTask() {
                         @Override
                         public void run() {
@@ -224,13 +235,31 @@ public class Frag2 extends Fragment {
                         ByteBuffer buffer = img.getPlanes()[0].getBuffer();
                         byte[] bytes = new byte[buffer.capacity()];
                         buffer.get(bytes);
-                        sendImageToServer(bytes);
+
+                        // Convert byte array to Bitmap
+                        Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+
+                        // Rotate bitmap 90 degrees counterclockwise
+                        Matrix matrix = new Matrix();
+                        matrix.postRotate(90);
+
+                        matrix.preScale(-1.0f, 1.0f);
+
+                        Bitmap rotatedBitmap = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+
+                        // Convert rotated bitmap back to byte array
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        rotatedBitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                        byte[] rotatedBytes = stream.toByteArray();
+
+                        sendImageToServer(rotatedBytes);
                     } finally {
                         if (img != null) {
                             img.close();
                         }
                     }
                 }
+
             }, backgroundHandler);
 
             cameraCaptureSession.capture(captureBuilder.build(), new CameraCaptureSession.CaptureCallback() {
@@ -264,7 +293,9 @@ public class Frag2 extends Fragment {
         float scaleHeight = ((float) newHeight) / height;
 
         Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
+
+
+        matrix.postRotate(90);
         Bitmap resizedBitmap = Bitmap.createBitmap(bitmap, 0,0,width,height,matrix,true);
 
         // Http 요청을 이용하여 이미지를 서버에 전송
@@ -280,7 +311,7 @@ public class Frag2 extends Fragment {
                 .build();
 
         Request request = new Request.Builder()
-                .url("https://6ef2-192-249-19-234.ngrok-free.app/api/")
+                .url("https://92f1-192-249-19-234.ngrok-free.app/api/")
                 .post(requestBody)
                 .build();
 
@@ -304,15 +335,56 @@ public class Frag2 extends Fragment {
                         getActivity().runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);  // Add this line
+                                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
                                 imageView.setImageBitmap(bmp);
                             }
                         });
                     }
                 }
             }
+
         });
 
     }
+
+    private void setAutoOrientation() {
+        WindowManager manager = (WindowManager) getActivity().getSystemService(Context.WINDOW_SERVICE);
+        int rotation = manager.getDefaultDisplay().getRotation();
+        switch (rotation) {
+            case Surface.ROTATION_0:
+                captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, 90);
+                break;
+            case Surface.ROTATION_90:
+                captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, 0);
+                break;
+            case Surface.ROTATION_180:
+                captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, 270);
+                break;
+            case Surface.ROTATION_270:
+                captureRequestBuilder.set(CaptureRequest.JPEG_ORIENTATION, 180);
+                break;
+        }
+    }
+    private void transformImage(int width, int height) {
+        if (textureView == null) {
+            return;
+        }
+        Matrix matrix = new Matrix();
+        int rotation = getActivity().getWindowManager().getDefaultDisplay().getRotation();
+        RectF textureRectF = new RectF(0, 0, width, height);
+        RectF previewRectF = new RectF(0, 0, textureView.getHeight(), textureView.getWidth());
+        float centerX = textureRectF.centerX();
+        float centerY = textureRectF.centerY();
+
+        if (rotation == Surface.ROTATION_90 || rotation == Surface.ROTATION_270) {
+            previewRectF.offset(centerX - previewRectF.centerX(), centerY - previewRectF.centerY());
+            matrix.setRectToRect(textureRectF, previewRectF, Matrix.ScaleToFit.FILL);
+            float scale = Math.max((float)width / textureView.getWidth(), (float)height / textureView.getHeight());
+            matrix.postScale(scale, scale, centerX, centerY);
+            matrix.postRotate(0, centerX, centerY);
+        }
+        textureView.setTransform(matrix);
+    }
+
 
 }
