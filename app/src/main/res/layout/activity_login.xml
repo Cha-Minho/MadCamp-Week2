@@ -8,33 +8,66 @@
     android:padding="16dp"
     tools:context=".LoginActivity">
 
-    <android.widget.Button
-        android:id="@+id/btn_email_login"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="이메일로 로그인"
-        android:drawableLeft="@drawable/ic_mail"/>
+        android:background="@drawable/login_button_background_1"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="100dp">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_mail"
+            android:layout_gravity="center" />
+
+        <android.widget.Button
+            android:id="@+id/btn_email_login"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:text="이메일로 로그인"
+            android:textSize="15sp"
+            android:background="@android:color/transparent"/>
+
+    </LinearLayout>
 
     <LinearLayout
-        android:layout_width=""
-        android:layout_height=""/>
-    <android.widget.Button
-        android:id="@+id/btn_google_login"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        android:text="Google로 로그인"
-        android:drawableLeft="@mipmap/ic_google"
-        />
+        android:background="@drawable/login_button_background_2"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_marginBottom="200dp">
+
+        <androidx.constraintlayout.utils.widget.ImageFilterView
+            android:layout_width="40dp"
+            android:layout_height="30dp"
+            android:src="@drawable/fui_ic_googleg_color_24dp"
+            android:layout_gravity="center" />
+
+        <android.widget.Button
+            android:id="@+id/btn_google_login"
+            android:layout_width="120dp"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:text="Google로 로그인"
+            android:textSize="15sp"
+            android:textAllCaps="false"
+            />
+
+    </LinearLayout>
+
 
     <android.widget.Button
         android:id="@+id/btn_register"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:background="@drawable/login_button_background_3"
         android:text="이메일로 회원가입"
-        />
+        android:textColor="@color/white"
+        android:textSize="15sp"
+        android:layout_marginBottom="10dp"/>
 
 </LinearLayout>
