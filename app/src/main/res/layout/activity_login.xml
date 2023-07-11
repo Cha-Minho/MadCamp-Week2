@@ -21,7 +21,7 @@
         <androidx.constraintlayout.utils.widget.ImageFilterView
             android:layout_width="35dp"
             android:layout_height="35dp"
-            android:src="@drawable/ic_mail"
+            android:src="@mipmap/ic_email"
             android:layout_gravity="center" />
 
         <android.widget.Button

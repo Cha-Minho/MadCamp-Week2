@@ -73,10 +73,10 @@
             android:layout_height="wrap_content"
             android:hint="Write a comment..." />
 
-        <Button
+        <android.widget.Button
             android:id="@+id/button_submit_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Submit Comment" />
+            android:text="Submit Comment"/>
     </LinearLayout>
 </LinearLayout>
