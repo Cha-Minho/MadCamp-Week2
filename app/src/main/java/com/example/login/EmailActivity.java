@@ -4,9 +4,10 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.os.AsyncTask;
+import android.graphics.Color;
 import android.os.Bundle;
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import okhttp3.Call;
 import okhttp3.Callback;
@@ -40,7 +43,21 @@ public class EmailActivity extends AppCompatActivity {
         emailEditText = findViewById(R.id.editTextEmail);
         passwordEditText = findViewById(R.id.editTextPassword);
         loginButton = findViewById(R.id.buttonLogin);
+        TextWatcher textWatcher = new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
 
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                checkFieldsForEmptyValues();
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {}
+        };
+
+        emailEditText.addTextChangedListener(textWatcher);
+        passwordEditText.addTextChangedListener(textWatcher);
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -120,6 +137,33 @@ public class EmailActivity extends AppCompatActivity {
 
 
         });
+    }
+
+    void checkFieldsForEmptyValues() {
+        String email = emailEditText.getText().toString();
+        String password = passwordEditText.getText().toString();
+
+        // Add your condition here
+        if (isValidEmail(email) && isValidPassword(password)) {
+            loginButton.setEnabled(true);
+            loginButton.setBackgroundResource(R.drawable.register_button_enabled); // Change the background to enabled state
+            loginButton.setTextColor(Color.WHITE); // Change the text color to white
+        } else {
+            loginButton.setEnabled(false);
+            loginButton.setBackgroundResource(R.drawable.register_button_background); // Change the background to disabled state
+            loginButton.setTextColor(Color.BLACK); // Change the text color to black
+        }
+    }
+
+    boolean isValidEmail(String email) {
+        String emailRegex = "^[A-Za-z0-9+_.-]+@(.+)$";
+        Pattern pattern = Pattern.compile(emailRegex);
+        Matcher matcher = pattern.matcher(email);
+        return matcher.matches();
+    }
+
+    boolean isValidPassword(String password) {
+        return password.length() >= 6;
     }
 
 }
