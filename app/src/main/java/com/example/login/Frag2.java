@@ -74,6 +74,41 @@ public class Frag2 extends Fragment {
         public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
         }
     };
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (textureView.isAvailable()) {
+            openCamera();
+        } else {
+            textureView.setSurfaceTextureListener(textureListener);
+        }
+    }
+
+    @Override
+    public void onPause() {
+        closeCamera();
+        super.onPause();
+    }
+    private void closeCamera() {
+        try {
+            if (null != cameraCaptureSession) {
+                cameraCaptureSession.close();
+                cameraCaptureSession = null;
+            }
+            if (null != cameraDevice) {
+                cameraDevice.close();
+                cameraDevice = null;
+            }
+            if (null != reader) {
+                reader.close();
+                reader = null;
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
+        }
+    }
+
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
