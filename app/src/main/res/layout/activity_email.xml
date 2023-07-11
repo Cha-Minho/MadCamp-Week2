@@ -10,22 +10,41 @@
     <EditText
         android:id="@+id/editTextEmail"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="이메일 주소"
-        tools:ignore="TouchTargetSizeCheck" />
+        android:layout_height="50dp"
+        android:hint="이메일 주소 입력"
+        tools:ignore="TouchTargetSizeCheck"
+        android:inputType="textEmailAddress"
+        android:background="@drawable/edittext_background"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:paddingLeft="15dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="15sp"
+        android:layout_marginTop="100dp"/>
 
     <EditText
         android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="비밀번호"
+        android:layout_height="50dp"
+        android:hint="비밀번호 입력"
         android:inputType="textPassword"
-        tools:ignore="TouchTargetSizeCheck" />
+        tools:ignore="TouchTargetSizeCheck"
+        android:background="@drawable/edittext_background"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:paddingLeft="15dp"
+        android:layout_marginBottom="20dp"
+        android:textSize="15sp"/>
 
     <android.widget.Button
         android:id="@+id/buttonLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="로그인" />
+        android:text="로그인"
+        android:layout_marginRight="10dp"
+        android:layout_marginLeft="10dp"
+        android:textColor="@color/black"
+        android:background="@drawable/register_button_background"
+        android:textSize="15sp"/>
 
 </LinearLayout>
