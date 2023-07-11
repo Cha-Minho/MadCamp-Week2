@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.Toolbar;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -86,7 +87,15 @@ public class Frag1 extends Fragment {
         });
 
         loadPosts();
-
+        ImageButton searchButton = view.findViewById(R.id.search_button);
+        searchButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // Start the search activity
+                Intent intent = new Intent(getActivity(), SearchActivity.class);
+                startActivity(intent);
+            }
+        });
         return view;
     }
     @Override
@@ -99,7 +108,7 @@ public class Frag1 extends Fragment {
     }
 
 
-    public class Post {
+    public static class Post {
         private int postId;
         private String postTitle;
         private String postContent;
