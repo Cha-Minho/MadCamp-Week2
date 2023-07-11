@@ -14,24 +14,39 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-
+            android:orientation="vertical"
+            android:layout_marginTop="30dp">
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <ImageView
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_person"
+                    android:background="@drawable/person_background"/>
             <!-- New views for name and date -->
-            <TextView
-                android:id="@+id/tv_name"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="16sp"
-                android:textStyle="bold" />
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingLeft="15dp">
+                    <TextView
+                        android:id="@+id/tv_name"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="16sp"
+                        android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tv_date"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="14sp"
-                android:layout_marginTop="4dp" />
-
+                    <TextView
+                        android:id="@+id/tv_date"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:textSize="14sp"
+                        android:layout_marginTop="4dp" />
+                </LinearLayout>
             <!-- Existing views -->
+            </LinearLayout>
 
             <TextView
                 android:id="@+id/tv_title_detail"
@@ -82,20 +97,28 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="45dp"
+        android:orientation="horizontal"
+        android:background="@drawable/register_button_background">
 
         <EditText
             android:id="@+id/edit_text_comment"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:hint="Write a comment..."
-            tools:ignore="TouchTargetSizeCheck" />
+            android:hint="댓글을 작성하세요"
+            tools:ignore="TouchTargetSizeCheck"
+            android:layout_weight="1"
+            android:paddingLeft="10dp"
+            android:background="@null"
+            android:layout_gravity="center"/>
 
         <android.widget.Button
             android:id="@+id/button_submit_comment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Submit Comment"/>
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@drawable/ic_comment"
+            android:layout_gravity="center"
+            android:layout_marginRight="10dp"
+            />
     </LinearLayout>
 </LinearLayout>
