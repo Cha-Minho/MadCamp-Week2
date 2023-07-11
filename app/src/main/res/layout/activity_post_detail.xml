@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -16,14 +16,30 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <!-- Your other views -->
+            <!-- New views for name and date -->
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:layout_marginTop="4dp" />
+
+            <!-- Existing views -->
 
             <TextView
                 android:id="@+id/tv_title_detail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                android:layout_marginTop="8dp"/>
 
             <TextView
                 android:id="@+id/tv_content_detail"
@@ -31,10 +47,12 @@
                 android:layout_height="wrap_content"
                 android:textSize="16sp"
                 android:layout_marginTop="8dp" />
+
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal">
+
                 <android.widget.Button
                     android:id="@+id/btn_revise_detail"
                     android:layout_width="wrap_content"
@@ -71,7 +89,8 @@
             android:id="@+id/edit_text_comment"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Write a comment..." />
+            android:hint="Write a comment..."
+            tools:ignore="TouchTargetSizeCheck" />
 
         <android.widget.Button
             android:id="@+id/button_submit_comment"

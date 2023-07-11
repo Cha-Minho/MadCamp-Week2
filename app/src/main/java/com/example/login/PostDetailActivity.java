@@ -60,6 +60,7 @@ public class PostDetailActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_post_detail);
         sharedPref = getSharedPreferences("UserPreferences", MODE_PRIVATE);
 
@@ -68,6 +69,13 @@ public class PostDetailActivity extends AppCompatActivity {
         postTitle = intent.getStringExtra("postTitle");
         postContent = intent.getStringExtra("postContent");
         postId = intent.getIntExtra("postId", -1);
+        String postDate = intent.getStringExtra("postDate");
+        Integer userId = intent.getIntExtra("userId", -1);
+        TextView dateTextView = findViewById(R.id.tv_date);
+        TextView authorNameTextView = findViewById(R.id.tv_name);
+        Log.d("userId", String.valueOf(userId));
+        dateTextView.setText(postDate);
+
 
         // Initialize the views
         titleTextView = findViewById(R.id.tv_title_detail);
@@ -134,6 +142,53 @@ public class PostDetailActivity extends AppCompatActivity {
                 finish();
             }
         });
+
+        // Create a new OkHttpClient instance
+        OkHttpClient client = new OkHttpClient();
+
+// JSON data
+        String json = "{\"userId\":" + userId + "}";
+
+// Create a RequestBody with the JSON data and the content type
+        RequestBody body = RequestBody.create(json, MediaType.parse("application/json; charset=utf-8"));
+
+// Create a new Request
+        Request request = new Request.Builder()
+                .url("https://3f01-192-249-19-234.ngrok-free.app/ur_name/") // replace with your server's URL
+                .post(body)
+                .build();
+
+// Send the request and handle the response
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                // Handle the error
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if (response.isSuccessful()) {
+                    String responseData = response.body().string();
+                    try {
+                        JSONObject jsonObject = new JSONObject(responseData);
+                        final String name = jsonObject.getString("name");
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                authorNameTextView.setText(name);
+                            }
+                        });
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    // Handle the error
+                    Log.e("TAG", "Server responded with status code: " + response.code());
+                }
+            }
+        });
+
     }
 
     private void postComment() {

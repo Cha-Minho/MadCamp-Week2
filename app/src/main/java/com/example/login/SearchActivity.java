@@ -72,6 +72,8 @@ public class SearchActivity extends AppCompatActivity {
                 intent.putExtra("postTitle", post.getPostTitle());
                 intent.putExtra("postContent", post.getPostContent());
                 intent.putExtra("postId", post.getPostId());
+                intent.putExtra("postDate", post.getPostDate());
+                intent.putExtra("userId", post.getUserId());
                 startActivity(intent);
             }
         });
