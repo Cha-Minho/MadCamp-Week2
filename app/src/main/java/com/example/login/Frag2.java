@@ -11,8 +11,11 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.hardware.camera2.*;
 import android.hardware.camera2.params.StreamConfigurationMap;
+import android.media.AudioManager;
 import android.media.Image;
 import android.media.ImageReader;
+import android.media.MediaPlayer;
+import android.media.ToneGenerator;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
@@ -359,13 +362,26 @@ public class Frag2 extends Fragment {
 
                         // Get the bad_posture from the response
                         boolean badPosture = json.getBoolean("bad_posture");
-                        // TODO: Use the badPosture variable
+
+                        // If badPosture is true, play beep sound
+                        if(badPosture) {
+                            if(getActivity() != null) {
+                                getActivity().runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        MediaPlayer mediaPlayer = MediaPlayer.create(getContext(), R.raw.beep_sound);
+                                        mediaPlayer.start();
+                                    }
+                                });
+                            }
+                        }
 
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
                 }
             }
+
 
 
         });
