@@ -9,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,9 +72,12 @@ public class Frag1 extends Fragment {
                 intent.putExtra("postTitle", post.getPostTitle());
                 intent.putExtra("postContent", post.getPostContent());
                 intent.putExtra("postId", post.getPostId());
+                intent.putExtra("postDate", post.getPostDate());  // Add this line to pass the date
+                intent.putExtra("userId", post.getUserId());  // Add this line to pass the user id
                 startActivity(intent);
             }
         });
+
 
 
         // Set up the FloatingActionButton
@@ -144,6 +148,21 @@ public class Frag1 extends Fragment {
 
         public int getPostId() {
             return postId;
+        }
+        public int getUserId() {
+            return userId;
+        }
+
+        public void setUserId(int userId) {
+            this.userId = userId;
+        }
+
+        public String getPostDate() {
+            return postDate;
+        }
+
+        public void setPostDate(String postDate) {
+            this.postDate = postDate;
         }
     }
 
