@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape xmlns:android="http://schemas.android.com/apk/res/android">
+    <corners android:radius="8dp" /> <!-- 둥근 사각형의 반지름 -->
+    <solid android:color="#DDDDDD"/>
+
+</shape>
