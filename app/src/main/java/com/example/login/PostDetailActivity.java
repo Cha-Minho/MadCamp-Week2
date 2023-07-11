@@ -199,7 +199,8 @@ public class PostDetailActivity extends AppCompatActivity {
             // Create a Comment object with the input text and other necessary information,
             // then send it to the server. You should also add it to the commentList and notify
             // the commentAdapter that the data has changed.
-            PostComment newComment = new PostComment(commentText, postId, R.id.comment_id);
+            int userId = sharedPref.getInt("userId", -1);
+            PostComment newComment = new PostComment(commentText, postId, R.id.comment_id, userId, "0");
             commentList.add(newComment);
             commentAdapter.notifyDataSetChanged();
 
@@ -208,7 +209,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
 //            editTextComment = findViewById(R.id.edit_text_comment);
 
-            int userId = sharedPref.getInt("userId", -1);
+
             int post_Id = postId;
             Log.d("userID", String.valueOf(userId));
             if (userId != -1) {
@@ -298,8 +299,10 @@ public class PostDetailActivity extends AppCompatActivity {
                             String commentText = jsonObject.getString("context"); // replace with your actual key
                             postId = jsonObject.getInt("post_id");
                             int commentId = jsonObject.getInt("id");
+                            int user_Id = jsonObject.getInt("user_id");
+                            String Date = jsonObject.getString("date");
                             // Add other necessary data
-                            PostComment comment = new PostComment(commentText, postId, commentId);
+                            PostComment comment = new PostComment(commentText, postId, commentId, user_Id, Date);
                             commentList.add(comment);
                         }
 
