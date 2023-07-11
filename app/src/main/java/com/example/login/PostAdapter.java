@@ -75,7 +75,28 @@ public class PostAdapter extends RecyclerView.Adapter<PostAdapter.PostViewHolder
 
         void bind(Frag1.Post post) {
             titleTextView.setText(post.getPostTitle());
-            contentTextView.setText(post.getPostContent());
+
+            String postContent = post.getPostContent();
+            String[] lines = postContent.split("\n");
+
+            // If more than 2 lines, keep only the first 2.
+            if (lines.length > 2) {
+                postContent = lines[0] + "\n" + lines[1];
+                postContent += "...";
+            }
+
+            // If more than 50 characters, keep only the first 50.
+            else if (postContent.length() > 50) {
+                postContent = postContent.substring(0, 50);
+                postContent += "...";
+            }
+
+            else {
+            }
+
+
+
+            contentTextView.setText(postContent);
         }
     }
 }
