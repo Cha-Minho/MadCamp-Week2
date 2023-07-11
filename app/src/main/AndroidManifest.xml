@@ -25,7 +25,8 @@
             android:exported="false" />
         <activity
             android:name=".PostDetailActivity"
-            android:exported="false" />
+            android:exported="false"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize"/>
         <activity
             android:name=".NewPostActivity"
             android:exported="false" />

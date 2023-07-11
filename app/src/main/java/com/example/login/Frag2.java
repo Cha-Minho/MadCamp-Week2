@@ -199,7 +199,14 @@ public class Frag2 extends Fragment {
                     TimerTask task = new TimerTask() {
                         @Override
                         public void run() {
-                            capture();
+                            if(cameraDevice != null) {
+                                capture();
+                            } else {
+                                if(timer != null) { // Check if timer is not null before calling cancel
+                                    timer.cancel();  // Cancel the timer if the cameraDevice is null
+                                    timer = null;    // Set timer to null after canceling
+                                }
+                            }
                         }
                     };
                     timer = new Timer();
@@ -219,10 +226,7 @@ public class Frag2 extends Fragment {
 
 
     private void capture() {
-        if (isProcessingImage || cameraDevice == null) {
-            return;
-        }
-        if (cameraCaptureSession == null) {
+        if (isProcessingImage || cameraDevice == null || cameraCaptureSession == null) {
             return;
         }
         isProcessingImage = true;
@@ -280,6 +284,13 @@ public class Frag2 extends Fragment {
 
         } catch (CameraAccessException e) {
             e.printStackTrace();
+            return;
+        } catch (IllegalStateException e) { // Catch and handle IllegalStateException
+            e.printStackTrace();
+            if(timer != null) {
+                timer.cancel();
+                timer = null;
+            }
             return;
         }
     }
