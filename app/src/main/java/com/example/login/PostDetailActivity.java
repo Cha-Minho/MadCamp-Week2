@@ -183,14 +183,16 @@ public class PostDetailActivity extends AppCompatActivity {
                     public void onResponse(Call call, Response response) throws IOException {
                         if (response.isSuccessful()) {
                             String responseBody = response.body().string();
+                            Log.d("TAG", "response: " + responseBody);
                             try {
                                 JSONObject jsonObject = new JSONObject(responseBody);
                                 String commentId = jsonObject.getString("commentId");
                                 runOnUiThread(new Runnable() {
                                     @Override
                                     public void run() {
-                                        TextView tv_comment_id = findViewById(R.id.comment_id);
-                                        tv_comment_id.setText(commentId);
+//                                        Toast.makeText(PostDetailActivity.this, commentId, Toast.LENGTH_SHORT).show();
+                                        newComment.setCommentId(Integer.parseInt(commentId));
+                                        newComment.getCommentId();
                                     }
                                 });
                             } catch (JSONException e) {
@@ -240,8 +242,9 @@ public class PostDetailActivity extends AppCompatActivity {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String commentText = jsonObject.getString("context"); // replace with your actual key
                             postId = jsonObject.getInt("post_id");
+                            int commentId = jsonObject.getInt("id");
                             // Add other necessary data
-                            PostComment comment = new PostComment(commentText, postId, R.id.comment_id);
+                            PostComment comment = new PostComment(commentText, postId, commentId);
                             commentList.add(comment);
                         }
 

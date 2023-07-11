@@ -1,5 +1,7 @@
 package com.example.login;
 
+import android.util.Log;
+
 public class PostComment {
     private String text;
     private int postId;
@@ -18,8 +20,12 @@ public class PostComment {
     public int getPostId() {
         return postId;
     }
-
+    public void setCommentId(int a) {
+        this.commentId = a;
+        Log.d("set comment id", String.valueOf(this.commentId));
+    }
     public int getCommentId() {
-        return commentId;
+        Log.d("get comment id", String.valueOf(this.commentId));
+        return this.commentId;
     }
 }
