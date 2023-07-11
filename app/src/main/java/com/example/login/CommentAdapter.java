@@ -1,5 +1,7 @@
 package com.example.login;
 
+import android.os.Handler;
+import android.os.Looper;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +11,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -41,6 +44,8 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
     public void onBindViewHolder(@NonNull CommentViewHolder holder, int position) {
         PostComment comment = comments.get(position);
         holder.commentTextView.setText(comment.getText());
+        holder.comment_date_text_view.setText(comment.getDate());
+        updateUserName(holder.author_name_text_view, comment.getUserId());
         // Set other fields as needed
     }
 
@@ -53,9 +58,13 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
         TextView commentTextView;
         Button deleteButton;
 
+        TextView comment_date_text_view;
+        TextView author_name_text_view;
         CommentViewHolder(@NonNull View itemView) {
             super(itemView);
             commentTextView = itemView.findViewById(R.id.comment_text_view);
+            comment_date_text_view = itemView.findViewById(R.id.comment_date_text_view);
+            author_name_text_view = itemView.findViewById(R.id.author_name_text_view);
             deleteButton = itemView.findViewById(R.id.comment_delete);
 
             // Set click listener for delete button
@@ -117,6 +126,42 @@ public class CommentAdapter extends RecyclerView.Adapter<CommentAdapter.CommentV
             public void onResponse(Call call, Response response) throws IOException {
                 if (response.isSuccessful()) {
                     Log.i("Response", response.body().string());
+                }
+            }
+        });
+    }
+
+    private void updateUserName(TextView authorNameView, int userId) {
+        MediaType JSON = MediaType.parse("application/json; charset=utf-8");
+        OkHttpClient client = new OkHttpClient();
+
+        String jsonString = "{\"userId\": " + userId + "}";
+        RequestBody body = RequestBody.create(JSON, jsonString);
+
+        Request request = new Request.Builder()
+                .url("https://3f01-192-249-19-234.ngrok-free.app/ur_name/") // replace with your server URL
+                .post(body)
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(@NotNull Call call, @NotNull IOException e) {
+                e.printStackTrace();
+            }
+
+            @Override
+            public void onResponse(@NotNull Call call, @NotNull Response response) throws IOException {
+                try {
+                    if(response.isSuccessful()) {
+                        String jsonData = response.body().string();
+                        JSONObject Jobject = new JSONObject(jsonData);
+                        String userName = Jobject.getString("name");
+
+                        // Update the TextView on the UI thread
+                        new Handler(Looper.getMainLooper()).post(() -> authorNameView.setText(userName));
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
                 }
             }
         });
