@@ -182,15 +182,20 @@ public class PostDetailActivity extends AppCompatActivity {
                     @Override
                     public void onResponse(Call call, Response response) throws IOException {
                         if (response.isSuccessful()) {
-                            Log.d("TAG", "response: " + response.body().string());
                             String responseBody = response.body().string();
-                            runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    tv_comment_id.setText(responseBody);
-                                }
-                            });
-//                            finish();
+                            try {
+                                JSONObject jsonObject = new JSONObject(responseBody);
+                                String commentId = jsonObject.getString("commentId");
+                                runOnUiThread(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        TextView tv_comment_id = findViewById(R.id.comment_id);
+                                        tv_comment_id.setText(commentId);
+                                    }
+                                });
+                            } catch (JSONException e) {
+                                e.printStackTrace();
+                            }
                         } else {
                             throw new IOException("Unexpected code " + response);
                         }
