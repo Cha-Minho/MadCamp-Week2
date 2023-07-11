@@ -1,58 +1,82 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:padding="16dp">
 
-    <TextView
-        android:id="@+id/tv_title_detail"
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:fillViewport="true">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <!-- Your other views -->
+
+            <TextView
+                android:id="@+id/tv_title_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/tv_content_detail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="16sp"
+                android:layout_marginTop="8dp" />
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <android.widget.Button
+                    android:id="@+id/btn_revise_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="수정"/>
+
+                <android.widget.Button
+                    android:id="@+id/btn_remove_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="삭제"/>
+
+                <android.widget.Button
+                    android:id="@+id/btn_save_detail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="저장"/>
+            </LinearLayout>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_view_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:scrollbars="vertical"/>
+        </LinearLayout>
+    </ScrollView>
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="18sp"
-        android:textStyle="bold" />
+        android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/tv_content_detail"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:layout_marginTop="8dp" />
+        <EditText
+            android:id="@+id/edit_text_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="Write a comment..." />
 
-    <android.widget.Button
-        android:id="@+id/btn_revise_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="수정"/>
-
-    <android.widget.Button
-        android:id="@+id/btn_remove_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="삭제"/>
-
-    <android.widget.Button
-        android:id="@+id/btn_save_detail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="저장"/>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_view_comments"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:scrollbars="vertical"/>
-
-    <EditText
-        android:id="@+id/edit_text_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:hint="Write a comment..." />
-
-    <Button
-        android:id="@+id/button_submit_comment"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Submit Comment" />
-
+        <Button
+            android:id="@+id/button_submit_comment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Submit Comment" />
+    </LinearLayout>
 </LinearLayout>
