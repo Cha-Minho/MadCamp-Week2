@@ -9,6 +9,7 @@
     tools:context=".LoginActivity">
 
     <LinearLayout
+        android:id="@+id/email_login_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/login_button_background_1"
@@ -34,6 +35,7 @@
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/google_login_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@drawable/login_button_background_2"
