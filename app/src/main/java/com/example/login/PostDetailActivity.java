@@ -168,7 +168,7 @@ public class PostDetailActivity extends AppCompatActivity {
                 OkHttpClient client = new OkHttpClient();
                 RequestBody body = RequestBody.create(JSON, json.toString());
                 Request request = new Request.Builder()
-                        .url("https://92f1-192-249-19-234.ngrok-free.app/comment/")
+                        .url("https://3f01-192-249-19-234.ngrok-free.app/comment/")
                         .post(body)
                         .build();
                 commentInput.setText(""); // Clear the input box
@@ -217,7 +217,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Build the request
         Request request = new Request.Builder()
-                .url("https://92f1-192-249-19-234.ngrok-free.app/load_comments/" + postId + "/") // Assuming this is your URL
+                .url("https://3f01-192-249-19-234.ngrok-free.app/load_comments/" + postId + "/") // Assuming this is your URL
                 .get()
                 .build();
 
@@ -278,7 +278,7 @@ public class PostDetailActivity extends AppCompatActivity {
 
         // Build the request
         Request request = new Request.Builder()
-                .url("https://92f1-192-249-19-234.ngrok-free.app/delete_post/") // replace with your actual URL and append the ID of the post
+                .url("https://3f01-192-249-19-234.ngrok-free.app/delete_post/") // replace with your actual URL and append the ID of the post
                 .post(body)
                 .build();
 

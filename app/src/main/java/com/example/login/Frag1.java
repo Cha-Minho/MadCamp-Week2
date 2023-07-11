@@ -32,7 +32,7 @@ import okhttp3.Response;
 
 public class Frag1 extends Fragment {
     public static final int NEW_POST_REQUEST_CODE = 1;
-    private static final String URL = "https://92f1-192-249-19-234.ngrok-free.app/load_post/"; // replace with your server's URL
+    private static final String URL = "https://3f01-192-249-19-234.ngrok-free.app/load_post/"; // replace with your server's URL
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     private RecyclerView recyclerView;

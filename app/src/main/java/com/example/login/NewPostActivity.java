@@ -30,7 +30,7 @@ public class NewPostActivity extends AppCompatActivity {
     private Button buttonSubmit;
     private Button cancelPost;
 
-    private static final String URL = "https://92f1-192-249-19-234.ngrok-free.app/post/";
+    private static final String URL = "https://3f01-192-249-19-234.ngrok-free.app/post/";
     public static final MediaType JSON = MediaType.get("application/json; charset=utf-8");
 
     SharedPreferences sharedPref;

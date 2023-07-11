@@ -87,7 +87,7 @@ public class EditPostActivity extends AppCompatActivity {
 
         // Build the request
         Request request = new Request.Builder()
-                .url("https://92f1-192-249-19-234.ngrok-free.app/edit_post/") // replace with your actual URL and append the ID of the post
+                .url("https://3f01-192-249-19-234.ngrok-free.app/edit_post/") // replace with your actual URL and append the ID of the post
                 .post(body)
                 .build();
 
