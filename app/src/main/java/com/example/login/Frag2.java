@@ -16,6 +16,7 @@ import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.util.Base64;
 import android.util.Log;
 import android.view.*;
 import android.widget.ImageView;
@@ -28,6 +29,8 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -74,41 +77,6 @@ public class Frag2 extends Fragment {
         public void onSurfaceTextureUpdated(@NonNull SurfaceTexture surface) {
         }
     };
-    @Override
-    public void onResume() {
-        super.onResume();
-        if (textureView.isAvailable()) {
-            openCamera();
-        } else {
-            textureView.setSurfaceTextureListener(textureListener);
-        }
-    }
-
-    @Override
-    public void onPause() {
-        closeCamera();
-        super.onPause();
-    }
-    private void closeCamera() {
-        try {
-            if (null != cameraCaptureSession) {
-                cameraCaptureSession.close();
-                cameraCaptureSession = null;
-            }
-            if (null != cameraDevice) {
-                cameraDevice.close();
-                cameraDevice = null;
-            }
-            if (null != reader) {
-                reader.close();
-                reader = null;
-            }
-        } catch (Exception e) {
-            throw new RuntimeException("Interrupted while trying to lock camera closing.", e);
-        }
-    }
-
-
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -251,7 +219,9 @@ public class Frag2 extends Fragment {
         if (isProcessingImage || cameraDevice == null) {
             return;
         }
-
+        if (cameraCaptureSession == null) {
+            return;
+        }
         isProcessingImage = true;
         try {
             final CaptureRequest.Builder captureBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_STILL_CAPTURE);
@@ -306,9 +276,13 @@ public class Frag2 extends Fragment {
             }, backgroundHandler);
 
         } catch (CameraAccessException e) {
+            e.printStackTrace();
             return;
         }
     }
+
+
+
 
     private void sendImageToServer(byte[] data) {
         BitmapFactory.Options options = new BitmapFactory.Options();
@@ -361,19 +335,38 @@ public class Frag2 extends Fragment {
                 if (!response.isSuccessful()) {
                     throw new IOException("Unexpected code " + response);
                 } else {
-                    InputStream in = response.body().byteStream();
-                    final Bitmap bmp = BitmapFactory.decodeStream(in);
-                    if (getActivity() != null) {
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
-                                imageView.setImageBitmap(bmp);
-                            }
-                        });
+                    try {
+                        // Parse the response
+                        JSONObject json = new JSONObject(response.body().string());
+
+                        // Get the base64 string from the response
+                        String base64Image = json.getString("image");
+
+                        // Convert the base64 string to a bitmap
+                        byte[] decodedString = Base64.decode(base64Image, Base64.DEFAULT);
+                        final Bitmap bmp = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+
+                        // Update the ImageView
+                        if (getActivity() != null) {
+                            getActivity().runOnUiThread(new Runnable() {
+                                @Override
+                                public void run() {
+                                    imageView.setScaleType(ImageView.ScaleType.FIT_CENTER);
+                                    imageView.setImageBitmap(bmp);
+                                }
+                            });
+                        }
+
+                        // Get the bad_posture from the response
+                        boolean badPosture = json.getBoolean("bad_posture");
+                        // TODO: Use the badPosture variable
+
+                    } catch (JSONException e) {
+                        e.printStackTrace();
                     }
                 }
             }
+
 
         });
 
