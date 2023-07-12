@@ -69,8 +69,18 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
                 navView.setSelectedItemId(R.id.frag2);
+
+//                // Create new instance of frag2
+//                Frag2 frag2 = new Frag2();
+//
+//                // Replace the fragment
+//                getSupportFragmentManager().beginTransaction()
+//                        .replace(R.id.nav_host_fragment, frag2)
+//                        .commit();
             }
+
         });
     }
 }

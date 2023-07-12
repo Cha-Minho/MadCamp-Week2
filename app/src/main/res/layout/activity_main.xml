@@ -1,5 +1,6 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -14,19 +15,6 @@
             app:layout_constraintTop_toTopOf="parent"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
 
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentBottom="true"
-            android:background="#FFFEFE"
-
-            app:backgroundTint="#E8E8E8"
-            app:itemIconSize="35dp"
-            app:labelVisibilityMode="unlabeled"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:menu="@menu/navigation" />
-
         <fragment
             android:id="@+id/nav_host_fragment"
             android:name="androidx.navigation.fragment.NavHostFragment"
@@ -39,23 +27,38 @@
             app:layout_constraintTop_toBottomOf="@id/toolbar"
             app:navGraph="@navigation/mobile_navigation"/>
 
+        <com.example.login.CustomBottomNavigationView
+            android:id="@+id/nav_view"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true"
+            android:background="#FFFFFF"
+            android:translationZ="1dp"
+
+            app:backgroundTint="#CA1E1E"
+            app:itemIconSize="35dp"
+            app:labelVisibilityMode="labeled"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/navigation" />
+
+
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fab_frag2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
+            android:layout_gravity="center"
             android:layout_margin="10dp"
-            android:background="@color/white"
-            android:contentDescription="Capture photo"
-            android:scaleType="centerInside"
+            android:background="@drawable/fab_background"
+            android:backgroundTint="#FFE0E0"
             android:src="@drawable/ic_camera"
-            app:backgroundTint="#FFD0D0"
+            android:translationZ="2dp"
             app:layout_constraintBottom_toBottomOf="@+id/nav_view"
             app:layout_constraintEnd_toEndOf="@+id/nav_view"
             app:layout_constraintStart_toStartOf="@+id/nav_view"
             app:layout_constraintTop_toTopOf="@+id/nav_view"
-            app:maxImageSize="50dp" />
-
-
+            app:layout_constraintVertical_bias="1.1"
+            app:maxImageSize="50dp"
+            app:shapeAppearanceOverlay="@drawable/fab_style" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
