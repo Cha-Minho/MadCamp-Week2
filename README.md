@@ -12,8 +12,8 @@
 
 ***
 ### 개발 팀원
-* [조재원](https://github.com/chojaework)
-* [차민호](https://github.com/Cha-Minho)
+* 고려대학교 컴퓨터학과 [조재원](https://github.com/chojaework)
+* KAIST 전산학부 [차민호](https://github.com/Cha-Minho)
 ***
 
 ### 개발 환경
