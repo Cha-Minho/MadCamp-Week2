@@ -9,13 +9,13 @@
         android:id="@+id/edit_text_title_revise"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Title" />
+        android:hint="제목" />
 
     <EditText
         android:id="@+id/edit_text_content_revise"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Content" />
+        android:hint="내용을 입력하세요" />
 
     <Button
         android:id="@+id/button_save_revise"

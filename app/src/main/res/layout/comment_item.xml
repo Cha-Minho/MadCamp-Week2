@@ -3,19 +3,36 @@
     android:layout_height="wrap_content"
     android:orientation="vertical"
     android:padding="8dp">
-
-    <TextView
-        android:id="@+id/author_name_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Author Name"
-        android:textSize="14sp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center">
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_person"
+            android:paddingRight="5dp"/>
+        <TextView
+            android:id="@+id/author_name_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Author Name"
+            android:textSize="14sp"
+            android:paddingRight="20dp"/>
+        <TextView
+            android:id="@+id/comment_date_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Comment Date"
+            android:textSize="12sp"
+            android:textColor="#BDBDBD"/>
+    </LinearLayout>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:paddingTop="8dp">
+        android:paddingTop="0dp">
 
         <TextView
             android:id="@+id/comment_text_view"
@@ -24,20 +41,12 @@
             android:layout_weight="1"
             android:textSize="16sp"/>
 
-        <Button
+        <android.widget.Button
             android:id="@+id/comment_delete"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="삭제"/>
+            android:layout_width="20dp"
+            android:layout_height="20dp"
+            android:background="@drawable/ic_trash"/>
     </LinearLayout>
-
-    <TextView
-        android:id="@+id/comment_date_text_view"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:text="Comment Date"
-        android:textSize="12sp"/>
 
     <TextView
         android:id="@+id/comment_id"
