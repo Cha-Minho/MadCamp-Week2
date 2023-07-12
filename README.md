@@ -159,7 +159,6 @@ public class CameraSurfaceView extends SurfaceView implements SurfaceHolder.Call
 </details>
 
 #### 3. Custom BottomNavigationView
-여따가 사진
 <details>
   <summary> 코드 보기 </summary>
 
