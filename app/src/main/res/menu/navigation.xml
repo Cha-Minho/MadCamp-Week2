@@ -6,9 +6,10 @@
         android:title="frag1" />
     <item
         android:id="@+id/frag2"
-        android:icon="@drawable/ic_launcher_foreground"
-        android:title="frag2"
-        android:visible="true"/>
+        android:visible="true"
+        android:checkable="false"
+        android:enabled="true"
+        android:title="" />
     <item
         android:id="@+id/frag3"
         android:icon="@drawable/ic_stretch"
