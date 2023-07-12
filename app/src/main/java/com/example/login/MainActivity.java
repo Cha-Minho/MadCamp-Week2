@@ -2,6 +2,7 @@ package com.example.login;
 
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.Toast;
 import com.example.login.databinding.ActivityMainBinding;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -65,22 +66,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        FloatingActionButton fab = findViewById(R.id.fab_frag2);
+        ImageView fab = findViewById(R.id.fab_frag2);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 navView.setSelectedItemId(R.id.frag2);
 
-//                // Create new instance of frag2
-//                Frag2 frag2 = new Frag2();
-//
-//                // Replace the fragment
-//                getSupportFragmentManager().beginTransaction()
-//                        .replace(R.id.nav_host_fragment, frag2)
-//                        .commit();
+                // If you want to replace a fragment
+                // Frag2 frag2 = new Frag2();
+                // getSupportFragmentManager().beginTransaction()
+                //       .replace(R.id.nav_host_fragment, frag2)
+                //       .commit();
             }
-
         });
+
     }
 }

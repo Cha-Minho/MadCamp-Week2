@@ -42,23 +42,22 @@
             app:menu="@menu/navigation" />
 
 
-        <com.google.android.material.floatingactionbutton.FloatingActionButton
+        <ImageView
             android:id="@+id/fab_frag2"
             android:layout_width="70dp"
             android:layout_height="70dp"
             android:layout_gravity="center"
             android:layout_margin="10dp"
             android:background="@drawable/fab_background"
-            android:backgroundTint="#FFE0E0"
             android:src="@drawable/ic_camera"
             android:translationZ="2dp"
             app:layout_constraintBottom_toBottomOf="@+id/nav_view"
             app:layout_constraintEnd_toEndOf="@+id/nav_view"
             app:layout_constraintStart_toStartOf="@+id/nav_view"
             app:layout_constraintTop_toTopOf="@+id/nav_view"
-            app:layout_constraintVertical_bias="1.1"
-            app:maxImageSize="50dp"
-            app:shapeAppearanceOverlay="@drawable/fab_style" />
+            app:layout_constraintVertical_bias="1.3"
+            tools:ignore="ContentDescription,SpeakableTextPresentCheck" />
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
