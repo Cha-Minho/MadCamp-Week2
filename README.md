@@ -8,8 +8,7 @@
 * 조금이라도 거북목이 될 낌새가 보이면 알람을 울립니다.
 * 올바른 자세를 유지하기 위한 스트레칭 영상을 제공합니다.
 
-
-여따가 사진
+![로고, 로그인](https://github.com/chojaework/MadCamp-Week2/assets/121816472/a8509543-1050-404b-84e0-5ebd5ba9e9c2)
 
 ***
 ### 개발 팀원
@@ -28,7 +27,10 @@
 
 ### 어플리케이션 소개
 ### Tab 1 - 커뮤니티
-여따가 사진
+
+![Community](https://github.com/chojaework/MadCamp-Week2/assets/121816472/7089d9ff-e2e9-436f-9b61-62e0ebc81b9e)
+
+
 #### 주요 기능
 * 시간 빌게이츠들을 위한 자유게시판을 제공합니다.
   * 로그인 정보를 바탕으로 게시글을 남기고 댓글을 작성할 수 있습니다.
@@ -41,7 +43,10 @@
 ***
 
 ### Tab 2 - 거북목 감지
-여따가 사진
+
+<img src = "https://github.com/chojaework/MadCamp-Week2/assets/121816472/ff7070ed-9353-43cc-b679-8b64a9ce1107" width="490" height="430">
+
+
 #### 주요 기능
 * 카메라를 통해 사용자의 자세를 감지하여 경고음을 울립니다.
   * 사용자의 어깨, 뒷목, 정수리 세 점을 detect하고 각도를 계산합니다. ([MediaPipe](https://github.com/spmallick/learnopencv/tree/master/Posture-analysis-system-using-MediaPipe-Pose) 사용)
@@ -54,7 +59,10 @@
 ***
 
 ### Tab 3 - 스트레칭 영상 제공
-여따가 사진
+
+<img src = "https://github.com/chojaework/MadCamp-Week2/assets/121816472/73c11da4-e8cd-45ba-a3ac-037f29593946" width="490" height="430">
+
+
 #### 주요기능
 * 목, 어깨가 뻐근할 때 간단하게 할 수 있는 스트레칭 영상들을 제공합니다.
 * 영상 아래의 카메라를 통해 내 스트레칭 자세를 점검할 수 있습니다.
