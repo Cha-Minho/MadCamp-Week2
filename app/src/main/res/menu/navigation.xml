@@ -3,7 +3,7 @@
     <item
         android:id="@+id/frag1"
         android:icon="@drawable/ic_article"
-        android:title="frag1" />
+        android:title="" />
     <item
         android:id="@+id/frag2"
         android:visible="true"
@@ -13,5 +13,5 @@
     <item
         android:id="@+id/frag3"
         android:icon="@drawable/ic_stretch"
-        android:title="frag3" />
+        android:title="" />
 </menu>
