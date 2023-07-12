@@ -9,26 +9,32 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:padding="16dp">
+        android:padding="16dp"
+        android:gravity="center">
 
         <ImageButton
             android:id="@+id/back_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="@android:drawable/ic_menu_revert" />
+            android:layout_width="30dp"
+            android:layout_height="30dp"
+            android:background="@color/fui_transparent"
+            android:src="@drawable/ic_back"
+            android:layout_marginRight="10dp"/>
 
         <EditText
             android:id="@+id/search_text"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:hint="Search..." />
+            android:hint="검색어를 입력하세요"
+            android:layout_marginRight="10dp"/>
 
-        <Button
+        <ImageButton
             android:id="@+id/search_button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Search" />
+            android:text="Search"
+            android:src="@drawable/ic_search"
+            android:background="@color/fui_transparent"/>
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView

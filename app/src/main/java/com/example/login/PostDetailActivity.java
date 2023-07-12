@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -36,9 +37,9 @@ import okhttp3.Response;
 public class PostDetailActivity extends AppCompatActivity {
     private TextView titleTextView;
     private TextView contentTextView;
-    private Button reviseButton;
-    private Button removeButton;
-    private Button saveButton;
+    private ImageButton reviseButton;
+    private ImageButton removeButton;
+//    private Button saveButton;
 
     private String postTitle;
     private String postContent;
@@ -82,7 +83,7 @@ public class PostDetailActivity extends AppCompatActivity {
         contentTextView = findViewById(R.id.tv_content_detail);
         reviseButton = findViewById(R.id.btn_revise_detail);
         removeButton = findViewById(R.id.btn_remove_detail);
-        saveButton = findViewById(R.id.btn_save_detail);
+//        saveButton = findViewById(R.id.btn_save_detail);
 
         // Set the initial title and content
         titleTextView.setText(postTitle);
@@ -136,12 +137,12 @@ public class PostDetailActivity extends AppCompatActivity {
             }
         });
 
-        saveButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+//        saveButton.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
 
         // Create a new OkHttpClient instance
         OkHttpClient client = new OkHttpClient();
@@ -294,6 +295,7 @@ public class PostDetailActivity extends AppCompatActivity {
                     // Parse the response. Assuming it's a JSON array of comments
                     try {
                         JSONArray jsonArray = new JSONArray(response.body().string());
+
                         for (int i = 0; i < jsonArray.length(); i++) {
                             JSONObject jsonObject = jsonArray.getJSONObject(i);
                             String commentText = jsonObject.getString("context"); // replace with your actual key
