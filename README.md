@@ -1,6 +1,6 @@
 # Pyeo
 
->Flow Week2 4분반 Team Turtle
+> Week2 4분반 Team Turtle
 
 
 * 책상 앞에 오래 앉아있는 현대인들을 위한 Android 어플리케이션입니다.
